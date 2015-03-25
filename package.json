@@ -1,0 +1,32 @@
+{
+  "name": "async-utils",
+  "version": "0.0.0",
+  "description": "Node complementary utils for Caolan async's module",
+  "main": "async-utils.js",
+  "dependencies": { },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinchogob/async-utils.git"
+  },
+  "keywords": [
+    "async",
+    "apply",
+    "auto",
+    "utils",
+    "intercept",
+    "ignore-error"
+  ],
+  "author": "Martin Gonzalez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tinchogob/async-utils/issues"
+  },
+  "homepage": "https://github.com/tinchogob/async-utils"
+}
