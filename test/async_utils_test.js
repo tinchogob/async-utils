@@ -64,4 +64,32 @@ describe('applyIE', function() {
 
 describe('intercept', function() {
 	
+	it('should call the cb if no error', function(done) {
+		var mock_response = 'ok';
+		var mock_fx = sinon.stub().yields(undefined, mock_response);
+		
+		var mock_cb = sinon.spy(function(error) {
+			throw new Error('should not be called');
+		});
+		
+		mock_fx(asyncUtils.intercept(mock_cb, function(response) {
+			response.should.be.eql(mock_response)
+			mock_cb.callCount.should.be.equal(0);
+			done();
+		}));
+	});
+
+	it('should call the provided fx with an error', function(done) {
+		var mock_error = 'error';
+		var mock_fx = sinon.stub().yields(mock_error);
+		
+		var mock_cb = sinon.spy(function(error) {
+			should.exist(error);
+			done();
+		});
+		
+		mock_fx(asyncUtils.intercept(mock_cb, function(response) {
+			throw new Error('should not be called');
+		}));
+	});
 });
