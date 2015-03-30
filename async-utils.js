@@ -10,10 +10,18 @@ module.exports.applyIE = function applyIE() {
 
     var args = Array.prototype.slice.call(arguments, 0);
 
+    var fx = args.shift();
+
     /* This is the function that async will call
      * Callback is async's callback that expects an error or a response
      */
-    return function wrapped_fx(callback) {
+    return function wrapped_fx() {
+
+        var wrapped_fx_args = Array.prototype.slice.call(arguments, 0);
+        
+        var callback = wrapped_fx_args.pop();
+
+        wrapped_fx_args.forEach(args.push, args);
 
         /* This function is the callback that will be called by the user
          * It's used as a proxy for the async callback that ignores the
@@ -25,8 +33,6 @@ module.exports.applyIE = function applyIE() {
             }
             return callback(undefined, returnValue);
         });
-
-        var fx = args.shift();
 
         //call the user function with the callback proxied.
         fx.apply(fx, args);

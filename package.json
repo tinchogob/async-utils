@@ -1,12 +1,13 @@
 {
   "name": "async-utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Node complementary utils for Caolan async's module",
   "main": "async-utils.js",
   "dependencies": { },
   "devDependencies": {
     "mocha": "*",
-    "should": "*"
+    "should": "*",
+    "sinon": "*"
   },
   "scripts": {
     "test": "mocha test"
