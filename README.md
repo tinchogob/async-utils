@@ -42,3 +42,37 @@ function process(callback) {
   }));
 }
 ```
+
+### applyAuto (as in apply to use in async.auto)
+Change function interface from node standard to async.auto function interface
+
+Async.auto handles functions with this signature:
+
+*function(callback, results)*
+
+This method changes this into this one automagically
+
+*function(result1, [,..], callback)*
+
+Example: 
+```javascript
+var async = require('async');
+var asyncUtils = require('async-utils');
+
+var flow = {
+  step1: someFx,
+  withoutApplyAuto: ['step1', function(cb, results) {
+    //get step1 value
+    var step1 = results.step1;
+    //work with step1
+    return cb();
+  }],
+  withApplyAuto: asyncUtils.applyAuto(['step1', function(step1, cb) {
+    //work with step1 directly as an argument
+    return cb();
+  }]),
+};
+
+async.auto(flow, function endFlow(error, results) {});
+
+```
