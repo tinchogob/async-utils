@@ -76,3 +76,36 @@ var flow = {
 async.auto(flow, function endFlow(error, results) {});
 
 ```
+
+### pluck (as in pluck and callback)
+Get a property from an async op yielded response and callback with it
+It's safe, so if the property is not available it yields null.
+It's intercepted, so if the async op yields an error it forwards the same error
+
+Example: 
+```javascript
+var asyncUtils = require('async-utils');
+
+var op = function(cb) {
+	return cb(undefined, {
+		msg: 'level 0',
+		l1: {
+			msg: 'level 1',
+			l2: {
+				msg: 'level 2',
+				l3: {
+					msg: 'level 3',
+					array: ['primero']
+				}
+			}
+		}
+	});
+};
+
+
+op(asyncUtils.pluck('l1.l2.l3.array[0]', function cb(error, deepL3ArrayFirstElem) {
+	console.log('e: ', error);
+	console.log('resp: ', deepL3ArrayFirstElem);
+}));
+
+```
