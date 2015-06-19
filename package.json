@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Node complementary utils for Caolan async's module",
   "main": "async-utils.js",
-  "dependencies": { },
+  "dependencies": {
+    "lodash": "3.9.0"
+  },
   "devDependencies": {
     "mocha": "*",
     "should": "*",

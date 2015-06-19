@@ -93,3 +93,69 @@ describe('intercept', function() {
 		}));
 	});
 });
+
+describe('pluck', function() {
+	
+	var error = {
+		msg: 'fail'
+	};
+
+	var response = {
+		msg: 'level 0',
+		l1: {
+			msg: 'level 1',
+			l2: {
+				msg: 'level 2',
+				l3: {
+					msg: 'level 3',
+					array: ['primero']
+				}
+			}
+		}
+	};
+
+	var mockOp = function(fail) {
+		return function(cb) {
+			if (fail) return cb(error);
+			return cb(undefined, response);
+		};
+	};
+	
+	it('should yield an error if the cb is called with an error', function(done) {
+		var op = mockOp('fail');
+		op(asyncUtils.pluck('msg', function cb(error, msg) {
+			should.exist(error);
+			should.not.exist(msg);
+			done();
+		}));
+	});
+
+	it('should yield the selected property of the response', function(done) {
+		var op = mockOp();
+		op(asyncUtils.pluck('msg', function cb(error, msg) {
+			should.not.exist(error);
+			should.exist(msg);
+			msg.should.be.equal('level 0');
+			done();
+		}));
+	});
+
+	it('should yield the selected property of the response (nested property)', function(done) {
+		var op = mockOp();
+		op(asyncUtils.pluck('l1.l2.l3.array[0]', function cb(error, msg) {
+			should.not.exist(error);
+			should.exist(msg);
+			msg.should.be.equal('primero');
+			done();
+		}));
+	});
+
+	it('should yield null if the select property fails ', function(done) {
+		var op = mockOp();
+		op(asyncUtils.pluck('l1.l2.propiedad_inexistente.array[0]', function cb(error, msg) {
+			should.not.exist(error);
+			should.not.exist(msg);
+			done();
+		}));
+	});
+});

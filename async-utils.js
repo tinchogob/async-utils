@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 /* Caolan's async.apply method
  * that ignore errors and returns undefined
  * hence applyIE (as in apply Ignore Errors)
@@ -6,7 +8,7 @@
  * WARNING: this only works for callback ending argument functions
  * which are standard with async so it should be this way
  */
-module.exports.applyIE = function applyIE() {
+var applyIE = module.exports.applyIE = function applyIE() {
 
     var args = Array.prototype.slice.call(arguments, 0);
 
@@ -47,7 +49,7 @@ module.exports.applyIE = function applyIE() {
  *  }))
  *
  */
-module.exports.intercept = function intercept(interceptor, real_callback) {
+var intercept = module.exports.intercept = function intercept(interceptor, real_callback) {
     return function callback_interceptor(error, response) {
         if (error) {
             return interceptor(error);
@@ -67,7 +69,7 @@ module.exports.intercept = function intercept(interceptor, real_callback) {
  *      arg3: applyAuto([arg1, arg2, _getArg3])
  *  }, onFinish);
  */
-module.exports.applyAuto = function(definition) {
+var applyAuto = module.exports.applyAuto = function applyAuto(definition) {
 
     var fx = definition.pop();
     var fx_args = JSON.parse(JSON.stringify(definition));
@@ -93,4 +95,16 @@ module.exports.applyAuto = function(definition) {
 
     return definition;
 
+};
+
+
+/* Lodash Pluck function for callbacks. 
+ * It intercepts the callback (yielding an error if present),
+ * If no error, then it navigates/gets the property evaluating
+ * the response for de wanted object (safely, if undefined, it returns null)
+ */
+var pluck = module.exports.pluck = function pluck(property, callback) {
+    return intercept(callback, function(response) {
+        return callback(undefined, _.get(response, property, null));
+    });
 };
