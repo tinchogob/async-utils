@@ -1,6 +1,6 @@
 {
   "name": "async-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node complementary utils for Caolan async's module",
   "main": "async-utils.js",
   "dependencies": {
