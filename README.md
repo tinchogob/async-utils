@@ -109,3 +109,28 @@ op(asyncUtils.pluck('l1.l2.l3.array[0]', function cb(error, deepL3ArrayFirstElem
 }));
 
 ```
+
+### fuse (as in fuse my callback)
+Adds a fuse timeout for callbacks.
+Implements a timeout where if callback has not been called by n ms, 
+then it gets callback'ed by async-utils with an error
+
+Example: 
+```javascript
+var asyncUtils = require('async-utils');
+
+var getTimedCb = function(ms, response) {
+  return function(cb) {
+    setTimeout(function() {
+      cb(undefined, response);
+    }, ms);
+  };
+};
+
+var asyncFx = getTimedCb(50, undefined, 'ok');
+    
+asyncFx(asyncUtils.fuse(10, function(error, response) {
+  console.log(response); //undefined
+  console.log(error); //async-utils fuse timeout rechead!
+}));
+```
