@@ -159,3 +159,50 @@ describe('pluck', function() {
 		}));
 	});
 });
+
+describe('fuse', function() {
+
+	var getTimedCb = function(ms, error, response) {
+		return function(cb) {
+			setTimeout(function() {
+				cb(error, response);
+			}, ms);
+		};
+	};
+
+	it('should yield a response normally if callback has been executed within the timeout', function(done) {
+		var asyncFx = getTimedCb(10, undefined, 'ok');
+		
+		asyncFx(asyncUtils.fuse(50, function(error, response) {
+			should.not.exist(error);
+			should.exist(response);
+			response.should.be.equal('ok');
+			done();
+		}));
+
+	});
+	
+	it('should yield an error normally if callback has been executed within the timeout', function(done) {
+		var asyncFx = getTimedCb(10, 'error', undefined);
+		
+		asyncFx(asyncUtils.fuse(50, function(error, response) {
+			should.exist(error);
+			should.not.exist(response);
+			error.should.be.equal('error');
+			done();
+		}));
+
+	});
+	
+	it('should yield an async-utils error if callback has not been executed within the timeout', function(done) {
+		var asyncFx = getTimedCb(50, 'error', undefined);
+		
+		asyncFx(asyncUtils.fuse(10, function(error, response) {
+			should.exist(error);
+			should.not.exist(response);
+			error.should.be.equal('async-utils fuse timeout rechead!');
+			done();
+		}));
+
+	});
+});
