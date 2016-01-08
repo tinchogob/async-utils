@@ -108,3 +108,28 @@ var pluck = module.exports.pluck = function pluck(property, callback) {
         return callback(undefined, _.get(response, property, null));
     });
 };
+
+/* Adds a fuse type timeout for callbacks. 
+ * Implement a timeout whereby if callback has not been called by n ms, 
+ * then callback automatically gets called with an error
+ */
+var fuse = module.exports.fuse = function fuse(ms, callback) {
+    var getTimeoutReached = false;
+
+    var getTimeout = setTimeout(function() {
+        getTimeoutReached = true;
+        return callback('async-utils fuse timeout rechead!');
+    }, ms);
+
+    return function fused_cb() {
+        //handle timeout
+        if (getTimeoutReached) {
+            return;
+        } else {
+            clearTimeout(getTimeout);
+        }
+
+        //handle cb
+        return callback.apply(undefined, arguments);
+    };
+};
