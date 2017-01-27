@@ -58,6 +58,35 @@ var intercept = module.exports.intercept = function intercept(interceptor, real_
     };
 };
 
+/***
+ * Null patter object
+ *
+ * It allows us not to write an if
+ *
+ * @return {Object} It might implement all namespace interface
+ */
+function _nullNamespace() {
+    return {
+        bind: function(callback) { return callback; }
+    }
+}
+
+
+function _retrieveActiveNamespace() {
+    var ns = process.namespaces;
+    var active;
+
+    // Tries to retrieves active namespace
+    Object.keys(ns).forEach( function(key) {
+        active = active || (ns[key].active) ? ns[key] : ns[key].active;
+    });
+
+    // Because active namespace might be null we set a default one
+    active = active || _nullNamespace();
+
+    return active;
+};
+
 /* Interface to use async.auto with nice function signature
  * EXAMPLE:
  *
@@ -70,7 +99,7 @@ var intercept = module.exports.intercept = function intercept(interceptor, real_
  *  }, onFinish);
  */
 var applyAuto = module.exports.applyAuto = function applyAuto(definition) {
-
+    var ns = _retrieveActiveNamespace();
     var fx = definition.pop();
     var fx_args = JSON.parse(JSON.stringify(definition));
 
@@ -80,7 +109,7 @@ var applyAuto = module.exports.applyAuto = function applyAuto(definition) {
 
     var interface_args = [];
 
-    var interface_fx = function interface_fx(cb, autoResults) {
+    var interface_fx = ns.bind(function interface_fx(cb, autoResults) {
         fx_args.forEach(function(fx_dependency) {
             var arg = autoResults[fx_dependency];
             interface_args.push(arg);
@@ -89,7 +118,7 @@ var applyAuto = module.exports.applyAuto = function applyAuto(definition) {
         interface_args.push(cb);
 
         return fx.apply(undefined, interface_args);
-    };
+    });
 
     definition.push(interface_fx);
 
