@@ -73,7 +73,7 @@ function _nullNamespace() {
 
 
 function _retrieveActiveNamespace() {
-    var ns = process.namespaces;
+    var ns = process.namespaces || {};
     var active;
 
     // Tries to retrieves active namespace
