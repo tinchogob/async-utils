@@ -1,10 +1,10 @@
 {
   "name": "async-utils",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Node complementary utils for Caolan async's module",
   "main": "async-utils.js",
   "dependencies": {
-    "lodash": "3.9.0"
+    "lodash": "4.17.5"
   },
   "devDependencies": {
     "mocha": "*",
